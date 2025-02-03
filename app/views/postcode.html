@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://unpkg.com/tailwindcss@1.2.0/dist/tailwind.min.css" rel="stylesheet">
+  
+  <style>
+    #message {
+      opacity: 0;
+    }
+  </style>
+  
+  
+  
+</head>
+<body class="overflow-hidden flex items-center justify-center" style="background: #fff;">
+    <div class="my-8">
+<div class="pb-6 md:pb-0 flex flex-col">
+
+  <label for="postcode" class="input-label text-3xl mb-5">Start by entering your postcode in the box below</label>
+  <p class="input-label text-base mb-5">Don't worry, we're not tracking you, we just want to make sure you're from the area!</p>
+  <div>
+    <label class="input-field inline-flex">
+      <div class="flex-1 leading-none">
+        <input id="postcode" type="text" class="p-4 rounded-lg w-9/12 p-0 border-2 border-blue-600 text-3xl text-blue-600" name="postcode">
+      
+      </div>
+    </label>
+    
+    
+    
+    
+  </div>
+  
+  
+  
+      </div>
+      
+      <button onclick="checkpostcode()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-8 mt-4 rounded-lg">
+  Submit
+</button>
+      
+      
+      <div id="message" class="text-red-700 py-4 px-4 mt-4 w-9/12 text-white bg-red-200 rounded-lg">Sorry, but you're not from the area 😬</div>
+      
+  </div>
+  
+  
+  
+  <script>
+    
+     function checkpostcode() {
+    
+        var text = document.getElementById("postcode").value;
+       
+       if(typeof text !== 'undefined'){
+ 
+          if((text.indexOf('OL9') !== -1) || (text.indexOf('ol9') !== -1)){
+            location.href = '/map';
+            console.log("nop");
+          } else {
+            var element = document.getElementById("message");
+            element.style.opacity = "1";
+          }
+         
+       }
+       
+     }
+    
+  </script>
+  
+  
+  
+</body>
+</html>

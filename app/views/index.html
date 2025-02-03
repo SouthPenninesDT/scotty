@@ -1,0 +1,704 @@
+<!-- This is a static file -->
+<!-- served from your routes in server.js -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A cool thing made with Glitch" />
+
+    <title>Welcome to Glitch!</title>
+
+    <link
+      id="favicon"
+      rel="icon"
+      href="https://glitch.com/edit/favicon-app.ico"
+      type="image/x-icon"
+    />
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+
+    <!-- import the webpage's client-side javascript file -->
+    <script src="/script.js" defer></script>
+
+    <link
+      href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js"></script>
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css"
+      rel="stylesheet"
+    />
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/regenerator-runtime@latest/runtime.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/contentful-management@latest/dist/contentful-management.browser.min.js"></script>
+    
+    
+    <style>
+
+     
+      
+      #map {
+position: absolute;
+top: 0;
+bottom: 0;
+width: 100%;
+        
+}
+      
+  
+    
+.m-cleaned  {
+  background-image: url("assets/cleaned@2x.png");
+  background-size: cover;
+  width: 20px;
+  height: 20px;
+  
+  
+}
+ 
+
+.mapboxgl-popup {
+  
+  z-index: 1;
+}
+
+      
+      .mapboxgl-popup-content {
+    position: relative;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.1);
+    padding: 10px 10px 15px;
+    pointer-events: auto;
+}
+
+      
+      .mapboxgl-popup-close-button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    border: 0;
+    border-radius: 0 3px 0 0;
+    cursor: pointer;
+    background-color: transparent;
+    font-size: 30px;
+}
+      
+      
+      #menu {
+position: absolute;
+        left: 20px;
+        top: 20px;
+background: #fff;
+        border-radius: 10px;
+padding: 10px;
+font-family: 'Open Sans', sans-serif;
+        z-index: 0;
+}
+      
+    </style>
+  </head>
+  <body>
+    <div>
+      <nav class="bg-gray-800">
+        
+      </nav>
+      <!--
+      <header class="bg-white shadow">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          <h1 class="text-3xl font-bold text-gray-900">
+            West Street, Oldham
+          </h1>
+        </div>
+      </header>
+-->
+      <main>
+        <div>
+          <!-- Replace with your content -->
+          <div class="px-4sm:px-0">
+            <!--<button class="modal-open bg-transparent border border-gray-500 hover:border-indigo-500 text-gray-500 hover:text-indigo-500 font-bold py-2 px-4 rounded-full">Open Modal</button>-->
+
+            <div id="map"></div>
+
+            
+            
+
+            
+            
+            
+            <!--Modal-->
+            <div
+              class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center z-10"
+            >
+              <div
+                class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"
+              ></div>
+
+              <div
+                class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto"
+              >
+                <div
+                  class="modal-close absolute top-0 right-0 cursor-pointer flex flex-col items-center mt-4 mr-4 text-white text-sm z-50"
+                >
+                  <svg
+                    class="fill-current text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewbox="0 0 18 18"
+                  >
+                    <path
+                      d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"
+                    ></path>
+                  </svg>
+                  <span class="text-sm">(Esc)</span>
+                </div>
+
+                <!-- Add margin if you want to see some of the overlay behind the modal-->
+                <div id="modal-content" class="modal-content py-4 text-left px-6">
+                  <!--Title-->
+                  <div class="flex justify-between items-center pb-3">
+                    <p class="text-2xl font-bold">Clean Me Up Scotty!</p>
+                    <div class="modal-close cursor-pointer z-50">
+                      <svg
+                        class="fill-current text-black"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewbox="0 0 18 18"
+                      >
+                        <path
+                          d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"
+                        ></path>
+                      </svg>
+                    </div>
+                  </div>
+
+                  
+                 <!--Body-->
+                  <p class="mb-4">Enter some info to log the stuff that needs cleaning.</p>
+
+                 
+                    
+                    <div class="mb-6">
+                      <input
+                        type="hidden"
+                        name="coordslat"
+                        id="coordslat"
+                        value=""
+                        required
+                        class="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
+                      />
+                    </div>
+                  
+                  <div class="mb-6">
+                      <input
+                        type="hidden"
+                        name="coordslon"
+                        id="coordslon"
+                        value=""
+                        required
+                        class="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
+                      />
+                    </div>
+                  
+                    
+                    <div class="mb-4">
+                      <label
+                        for="roadname"
+                        class="block mb-2 text-sm text-gray-600 dark:text-gray-400 font-bold"
+                        >Name of road or street where the issue is</label
+                      >
+                      <input
+                        type="text"
+                        name="roadname"
+                        id="roadname"
+                        placeholder="For example: Vale Drive"
+                        required
+                        class="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
+                      />
+                    </div>
+                    
+                     <div class="mb-4">
+                      <label
+                        for="locationdesc"
+                        class="block mb-2 text-sm text-gray-600 dark:text-gray-400 font-bold"
+                        >Where is the rubbish?</label
+                      >
+
+                      <textarea
+                        rows="3"
+                        name="locationdesc"
+                        id="locationdesc"
+                        placeholder="For example: just behind the wheelie bins on Vale Drive"
+                        class="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
+                        required
+                      ></textarea>
+                    </div>
+                    
+                     <div class="mb-4">
+                      <label
+                        for="issuedesc"
+                        class="block mb-2 text-sm text-gray-600 dark:text-gray-400 font-bold"
+                        >What is the rubbish?</label
+                      >
+
+                      <textarea
+                        rows="3"
+                        name="issuedesc"
+                        id="issuedesc"
+                        placeholder="For example: there are loads of chip wrappers and an old white cabinet."
+                        class="w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500"
+                        required
+                      ></textarea>
+                    </div>
+                    
+                    
+                  
+                    <p
+                      class="text-base text-center text-gray-400"
+                      id="result"
+                    ></p>
+
+                    <!--Footer-->
+                    <div class="flex justify-end pt-2">
+                      <button
+                        class="modal-close px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2"
+                      >
+                        Cancel
+                      </button>
+                      
+                      
+                      <button onclick="addpin()" type="submit" class="px-4 cursor-pointer bg-indigo-500 p-3 rounded-lg text-white hover:bg-indigo-400">Submit this!</button>
+                      
+                    </div>
+                
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /End replace -->
+        </div>
+      </main>
+    </div>
+
+    
+    <!--https://www.delftstack.com/howto/javascript/javascript-form-submit/-->
+    
+    
+    <div id="content" class="content-container"></div>
+
+    
+    <div id="menu">
+      
+<input id="streets-v11" type="radio" name="rtoggle" value="streets" checked="checked">
+<label for="streets-v11">Street</label>
+<input id="satellite-v9" type="radio" name="rtoggle" value="satellite">
+<label for="satellite-v9">Satellite</label>
+
+</div>
+
+    
+    
+    <script>
+      
+      mapboxgl.accessToken =
+        "pk.eyJ1Ijoic291dGhwZW5uaW5lc2R0IiwiYSI6ImNrb3NjZGRneDAwNTMydG55MzYwMHVwamwifQ.1pemWQVSeN0DQbNF2YifhA";
+
+    
+      var map = new mapboxgl.Map({
+        container: "map", // container id
+        style: "mapbox://styles/mapbox/streets-v11",
+        center: [-2.125580, 53.540200], // starting position
+        zoom: 17, // starting zoom
+        pitch: 50,
+        maxZoom: 21,
+        minZoom: 16,
+        bearing: 120,
+      });
+      
+      
+      const client = contentfulManagement.createClient({
+        accessToken: 'CFPAT-DlruYjloRdngjy9PAZLaMP37M2haJRCN5VJpUOb4pnk'
+      })
+      
+      // Get all entries
+      client.getSpace('qyzk0lawilz4')
+      .then((space) => space.getEnvironment('master'))
+      .then((environment) => environment.getEntries())
+      .then((response) => {
+      
+      //console.log(response.items);  
+      
+      response.items.forEach(function (entry) {
+        
+        if(entry.sys.id) {
+          var theID = entry.sys.id;
+          //console.log(theID);
+        }
+        
+        if(entry.fields.locationDescription["en-GB"]) {
+          var locationDescription = entry.fields.locationDescription["en-GB"];
+        }
+
+        if(entry.fields.issueDescription["en-GB"]) {
+          var issueDescription = entry.fields.issueDescription["en-GB"];
+        }
+
+        if(entry.fields.cleaningStatus["en-GB"] == true) {
+            var cleaningStatus = "Needs cleaning 😟";
+            var cleanstatus = "m-notcleaned";
+          } else {
+            var cleaningStatus = "Cleaned 😃";
+            var cleanstatus = "m-cleaned";
+        }
+
+        if(entry.fields.coordsLat["en-GB"]) {
+          var coordsLat = entry.fields.coordsLat["en-GB"];
+          //console.log(coordsNew);
+        }
+        
+        if(entry.fields.coordsLon["en-GB"]) {
+          var coordsLon = entry.fields.coordsLon["en-GB"];
+          //console.log(coordsNew);
+        }
+
+        if(entry.fields.makeOfRoadstreet["en-GB"]) {
+          var makeOfRoadstreet = entry.fields.makeOfRoadstreet["en-GB"];
+        }
+        
+        // Put the coords into LonLat format
+        var latlongy = "{lng: " + coordsLon + ", lat: " + coordsLat + "}";
+        var lattylongys = [];
+        lattylongys.push(coordsLon);
+        lattylongys.push(coordsLat);
+        var ll = mapboxgl.LngLat.convert(lattylongys);
+        
+        //console.log(ll);
+        
+        var popuphtml = `
+        <div class="modal-container py-2 text-left px-2">
+        <h1 class="text-2xl">${makeOfRoadstreet}</h1><br />
+
+        <h2 class="text-xl font-black">Issue location:</h2>
+        <p>${locationDescription}</p><br />
+
+        <h2 class="text-xl font-black">Issue description:</h2>
+        <p>${issueDescription}</p><br />
+
+        <h2 class="text-xl font-black">Status:</h2>
+        <p>${cleaningStatus}</p><br />
+
+        `;
+        
+        if(entry.fields.cleaningStatus["en-GB"] == true) {
+          popuphtml += `
+          <button onclick="markascleaned('${theID}')" class="modal-close px-4 cursor-pointer bg-indigo-500 p-3 rounded-lg text-white hover:bg-indigo-400">Mark this as cleaned!</button>
+          </div>
+          `;
+        }
+        
+        popuphtml += `
+        </div>
+        `;
+
+        
+        
+        var el = document.createElement('div');
+        
+        if(entry.fields.cleaningStatus["en-GB"] == true) {
+          //el.className = 'cleanstatus';
+          el.style.backgroundImage = 'url(https://cdn.glitch.com/e94642ab-bbd4-497e-92f3-f7855de852f2%2Fcross%402x.png?v=1622060689195)';
+        } 
+        
+        if(entry.fields.cleaningStatus["en-GB"] == false) {
+          //el.className = 'cleanstatus';
+          
+          el.style.backgroundImage = 'url(https://cdn.glitch.com/e94642ab-bbd4-497e-92f3-f7855de852f2%2Ftick%402x.png?v=1622060700876)';
+        }
+        
+        
+        el.style.width = '40px';
+        el.style.height = '40px';
+        el.style.backgroundSize = '100%';
+        
+    
+        
+        new mapboxgl.Marker(el)
+        .setLngLat(ll)
+        .setPopup(
+            new mapboxgl.Popup({ offset: 25, className: 'my-popup' }) // add popups
+        .setHTML(popuphtml))
+        .addTo(map);
+        
+        el.addEventListener('click', () => 
+           { 
+              //alert("Marker Clicked.");
+          toggleModal()
+           }
+        ); 
+    
+        
+        })
+      
+      })
+      .catch(console.error)
+      
+    </script>
+
+    
+    
+    <script>
+      
+      function markascleaned(theID) {
+          
+        client.getSpace('qyzk0lawilz4')
+        .then((space) => space.getEnvironment('master'))
+        .then((environment) => environment.getEntry(theID))
+        .then((entry) => {
+          entry.fields.cleaningStatus['en-GB'] = false
+          return entry.update()
+        })
+        .then(
+          function() {
+              
+            window.location.reload();
+            
+          }
+        )
+        .then((entry) => console.log(`Entry ${entry.sys.id} updated.`))
+        .catch(console.error)
+        
+      }
+      
+    </script>
+    
+    
+    
+    
+    <script>
+      
+      map.scrollZoom.disable();
+     
+      map.on('mouseover', function() {
+        //console.log('A mouseover event has occurred.');
+        map.getCanvas().style.cursor = "pointer";
+      });
+      
+      var layerList = document.getElementById('menu');
+      var inputs = layerList.getElementsByTagName('input');
+
+      function switchLayer(layer) {
+      var layerId = layer.target.id;
+      map.setStyle('mapbox://styles/mapbox/' + layerId);
+      }
+
+      for (var i = 0; i < inputs.length; i++) {
+      inputs[i].onclick = switchLayer;
+      }
+      
+      
+     
+  
+      
+      map.on('load', function () {
+        // Add a data source containing GeoJSON data.
+        map.addSource('weststreet', {
+        'type': 'geojson',
+        'data': {
+        'type': 'Feature',
+        'geometry': {
+        'type': 'Polygon',
+        // These coordinates outline West Street.
+        'coordinates': [
+        [
+        [-2.128069, 53.540648],
+        [-2.129129, 53.540858],
+        [-2.1287578, 53.5427891],
+        [-2.123973, 53.5420925],
+        [-2.122769, 53.539722],
+        [-2.124234, 53.539321],
+        [-2.124609, 53.539477],
+        [-2.126766, 53.538877],
+        [-2.128203, 53.539439],
+        [-2.128069, 53.540648]
+        ]
+        ]
+        }
+        }
+        });
+        
+     
+        // Add a new layer to visualize the polygon.
+        map.addLayer({
+        'id': 'weststreet',
+        'type': 'fill',
+        'source': 'weststreet', // reference the data source
+        'layout': {},
+        'paint': {
+        'fill-color': '#0080ff', // blue color fill
+        'fill-opacity': 0.05
+        }
+        });
+        
+        // Add a black outline around the polygon.
+        map.addLayer({
+          'id': 'outline',
+          'type': 'line',
+          'source': 'weststreet',
+          'layout': {},
+          'paint': {
+          'line-color': '#000',
+          'line-width': 3
+        }
+        });
+      });
+      
+      
+      // Add zoom and rotation controls to the map.
+      map.addControl(new mapboxgl.NavigationControl());
+      
+      
+      map.on("click", function(e) {
+       
+        //if not hovering over a marker (mapboxgl-marker) then do all the below:
+        toggleModal();
+        document.getElementById("coordslon").value = e.lngLat.lng;
+        document.getElementById("coordslat").value = e.lngLat.lat;
+        
+      });
+      
+    </script>
+    
+    
+    
+    <script>
+      
+      
+      
+      
+      function addpin() {
+        
+        var locationCoordsLat = document.getElementById("coordslat").value;
+        var locationCoordsLon = document.getElementById("coordslon").value;
+        var roadname = document.getElementById("roadname").value;
+        var locationdesc = document.getElementById("locationdesc").value;
+        var issuedesc = document.getElementById("issuedesc").value;
+        
+        
+        if(locationCoordsLat){
+          //console.log(locationCoordsLat);
+        }
+        
+        if(locationCoordsLon){
+          //console.log(locationCoordsLon);
+        }
+        
+        if(roadname){
+          //console.log(roadname);
+        }
+        
+        if(locationdesc){
+          //console.log(locationdesc);
+        }
+        
+        
+        if(issuedesc){
+          //console.log(issuedesc);
+        }
+        
+        client.getSpace('qyzk0lawilz4')
+        .then((space) => space.getEnvironment('master'))
+        .then((environment) => environment.createEntry('pin', {
+          fields: {
+            makeOfRoadstreet: {
+              'en-GB': roadname
+            },
+            locationDescription: {
+              'en-GB': locationdesc
+            },
+            issueDescription: {
+              'en-GB': issuedesc
+            },
+            coordsLat: {
+              'en-GB': locationCoordsLat
+            },
+            coordsLon: {
+              'en-GB': locationCoordsLon
+            },
+            cleaningStatus: {
+              'en-GB': true
+            }
+          }
+        }))
+        .then((entry) => entry.publish())
+        .then(
+          function() {
+              
+            
+            document.getElementById("modal-content").innerHTML = `
+            <div class="object-center p-3">
+            <img class="object-center text-center p-3" src="https://cdn.glitch.com/e94642ab-bbd4-497e-92f3-f7855de852f2%2Fsmiley.png?v=1621896212949" style="width: 40%; margin: 0 auto;"/>
+            <p class="object-center text-center text-2xl font-bold">Clean Request Submitted!</p>
+            <br />
+            <button onClick="window.location.reload();" type="submit" class="content-center cursor-pointer bg-indigo-500 p-3 rounded-lg text-white hover:bg-indigo-400" style="width: 100%; margin: 0 auto;">Refresh the page to see your pin!</button>
+            </div>
+            `;
+            
+          
+            
+            
+          }
+        )
+        .catch(console.error)
+        
+      }
+      
+    </script>
+
+    
+
+    <script>
+      
+      const overlay = document.querySelector(".modal-overlay");
+      overlay.addEventListener("click", toggleModal);
+      
+
+      var closemodal = document.querySelectorAll(".modal-close");
+      for (var i = 0; i < closemodal.length; i++) {
+        closemodal[i].addEventListener("click", toggleModal);
+      }
+
+      document.onkeydown = function(evt) {
+        evt = evt || window.event;
+        var isEscape = false;
+        if ("key" in evt) {
+          isEscape = evt.key === "Escape" || evt.key === "Esc";
+        } else {
+          isEscape = evt.keyCode === 27;
+        }
+        if (isEscape && document.body.classList.contains("modal-active")) {
+          toggleModal();
+        }
+      };
+
+      function toggleModal() {
+        const body = document.querySelector("body");
+        const modal = document.querySelector(".modal");
+        modal.classList.toggle("opacity-0");
+        modal.classList.toggle("pointer-events-none");
+        body.classList.toggle("modal-active");
+      }
+      
+    </script>
+    
+    
+    
+  </body>
+</html>
